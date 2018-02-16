@@ -67,10 +67,10 @@ often to stay up-to-date with security patches.
     could send users to a page without it, and the library would have no
     way of warning users of any malicious code on the page.
 
-        <script src="signed-web-apps/client.js"></script>
+        <script src="signed-web-apps/lib/client.js"></script>
         <script>
         new SWA({
-            url: 'signed-web-apps/sw/serviceworker.js'
+            url: 'signed-web-apps/lib/sw/serviceworker.js'
         });
         </script>
 
@@ -80,7 +80,7 @@ often to stay up-to-date with security patches.
     your files are in a directory called `dist` in a certain repository.
     Then this file should contain something like:
     
-        await importScripts('signed-web-apps/sw/github.js');
+        await importScripts('signed-web-apps/lib/sw/github.js');
         
         const GITHUB_API_URL = 'https://api.github.com/repos/<your-github-username>/<your-github-repo>/contents/?ref=';
         
@@ -101,7 +101,7 @@ often to stay up-to-date with security patches.
     2.  You can only register for `fetch`, `message`, `install` and
         `activate` events. If you want to register for other events, you
         have to manually add them to the `eventNames` list in
-        `signed-web-apps/sw/serviceworker.js`.
+        `signed-web-apps/lib/sw/serviceworker.js`.
     
     For more info about the kind of code you can write in this file, see
     [swa-config].
