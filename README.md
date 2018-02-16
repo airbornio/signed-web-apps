@@ -1,5 +1,7 @@
 # Signed Web Apps
 
+**Note:** This library isn't finished yet. Please check back later.
+
 ## What is it?
 
 This is a JavaScript library to protect the HTML, JS and CSS in web apps
