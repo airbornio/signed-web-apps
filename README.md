@@ -56,26 +56,19 @@ often to stay up-to-date with security patches.
 
 **Installation:**
 
-1.  Include the `lib` directory of this repository in your project under
-    the name `swa`:
+1.  Include this repository under your project:
 
-        bower install --save swa#latest
-        cp -r bower_components/swa/lib swa
-    
-    You don't have to use bower, you could also e.g. use git
-    subrepositories:
-    
-        git submodule add -b master https://github.com/airborn/swa.git lib
+        git submodule add -b master https://github.com/airbornio/signed-web-apps.git
 
 2.  The following code should be included on **every page** of your web
     app (even 404 and other error pages). If you don't, an attacker
     could send users to a page without it, and the library would have no
     way of warning users of any malicious code on the page.
 
-        <script src="swa/client.js"></script>
+        <script src="signed-web-apps/client.js"></script>
         <script>
         new SWA({
-            url: 'swa/sw/serviceworker.js'
+            url: 'signed-web-apps/sw/serviceworker.js'
         });
         </script>
 
@@ -85,7 +78,7 @@ often to stay up-to-date with security patches.
     your files are in a directory called `dist` in a certain repository.
     Then this file should contain something like:
     
-        await importScripts('swa/sw/github.js');
+        await importScripts('signed-web-apps/sw/github.js');
         
         const GITHUB_API_URL = 'https://api.github.com/repos/<your-github-username>/<your-github-repo>/contents/?ref=';
         
@@ -106,7 +99,7 @@ often to stay up-to-date with security patches.
     2.  You can only register for `fetch`, `message`, `install` and
         `activate` events. If you want to register for other events, you
         have to manually add them to the `eventNames` list in
-        `swa/sw/serviceworker.js`.
+        `signed-web-apps/sw/serviceworker.js`.
     
     For more info about the kind of code you can write in this file, see
     [swa-config].
@@ -116,15 +109,11 @@ often to stay up-to-date with security patches.
     import it from the file above. Be careful though, since the two may
     not play nicely together.
 
-4.  Update often. Preferably add this to your install or build script:
+4.  Update often. (Please see the note above the installation
+    instructions for the reasons why.) Preferably add this to your
+    install or build script:
 
-        bower install
-        cp -r bower_components/swa/lib swa
-    
-    Or, if you're using git submodules:
-    
         git submodule update --remote
-    
 
 
 [TOFU]: https://en.wikipedia.org/wiki/Trust_on_first_use
