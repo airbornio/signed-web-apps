@@ -1,4 +1,4 @@
-# Transparent Web Apps
+# Signed Web Apps
 
 ## What is it?
 
@@ -27,7 +27,7 @@ server can do the same. Even worse, a malicious developer could target
 *just one or a few* users, and serve them malicious code. That would be
 almost impossible to detect.
 
-## Why not just sign the code? Why check GitHub?
+## Why check GitHub? Why not just sign the code using public key crypto?
 
 Merely signing the code, and delivering public key signatures together
 with the code which are checked against a public key, does not solve the
@@ -57,38 +57,36 @@ often to stay up-to-date with security patches.
 **Installation:**
 
 1.  Include the `lib` directory of this repository in your project under
-    the name `twa`:
+    the name `swa`:
 
-        bower install --save twa#latest
-        cp -r bower_components/twa/lib twa
+        bower install --save swa#latest
+        cp -r bower_components/swa/lib swa
     
     You don't have to use bower, you could also e.g. use git
     subrepositories:
     
-        git submodule add -b master https://github.com/airborn/twa.git lib
+        git submodule add -b master https://github.com/airborn/swa.git lib
 
-2.  Create a file called `twa-config.json` in the root of your web app.
-    (It doesn't have to be the root of the domain, but it can't be in a
-    subdirectory of your web app unless you manually change
-    `twa/sw/serviceworker.js`). It should contain:
-    
-        {
-            "importScripts": [
-                "twa/sw/github.js",
-                "twa-github-config.js"
-            ]
-        }
-    
-    If you already have a Service Worker on the same scope, or want to
-    add one, add it to this list instead of registering it manually. For
-    more info see [twa-config][here].
+2.  The following code should be included on **every page** of your web
+    app (even 404 and other error pages). If you don't, an attacker
+    could send users to a page without it, and the library would have no
+    way of warning users of any malicious code on the page.
 
-3.  Create a file called `twa-github-config.js` (or something else, as
-    long as the list above points to it). This file will tell the
-    library where on GitHub to find your files. Let's say your files are
-    in a directory called `dist` in a certain repository. Then this file
-    should contain something like:
+        <script src="swa/client.js"></script>
+        <script>
+        new SWA({
+            url: 'swa/sw/serviceworker.js'
+        });
+        </script>
+
+3.  Create a file called `swa-serviceworker.js` in the root of your
+    domain. This file will (1) import other parts of the library and
+    (2) tell the library where on GitHub to find your files. Let's say
+    your files are in a directory called `dist` in a certain repository.
+    Then this file should contain something like:
     
+        await importScripts('swa/sw/github.js');
+        
         const GITHUB_API_URL = 'https://api.github.com/repos/<your-github-username>/<your-github-repo>/contents/?ref=';
         
         function getGitHubPath(request) {
@@ -96,11 +94,32 @@ often to stay up-to-date with security patches.
             if(path === '/') path = '/index.html';
             return 'dist' + path;
         }
+    
+    In this file, you can execute code and register for events like a
+    normal Service Worker, with two important exceptions:
+    
+    1.  importScripts() is not synchronous, so you need to put `await`
+        in front of it. This is also why the example above is wrapped in
+        an asynchronous [immediately-executed function
+        expression][IIFE].
+    
+    2.  You can only register for `fetch`, `message`, `install` and
+        `activate` events. If you want to register for other events, you
+        have to manually add them to the `eventNames` list in
+        `swa/sw/serviceworker.js`.
+    
+    For more info about the kind of code you can write in this file, see
+    [swa-config].
+    
+    If you want to add another (possibly unrelated) Service Worker
+    script (or already have one), don't register it manually. Instead,
+    import it from the file above. Be careful though, since the two may
+    not play nicely together.
 
 4.  Update often. Preferably add this to your install or build script:
 
         bower install
-        cp -r bower_components/twa/lib twa
+        cp -r bower_components/swa/lib swa
     
     Or, if you're using git submodules:
     
@@ -112,4 +131,3 @@ often to stay up-to-date with security patches.
 [CSP]: https://developer.mozilla.org/docs/Web/HTTP/CSP
 [SRI]: https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity
 [IIFE]: https://developer.mozilla.org/docs/Glossary/IIFE
-[twa-config]: 
