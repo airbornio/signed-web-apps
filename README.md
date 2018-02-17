@@ -6,9 +6,9 @@
 
 This is a JavaScript library to protect the HTML, JS and CSS in web apps
 from tampering by malicious servers or developers. It does this by
-checking code against the publicly available version on GitHub. It also
-checks the code every next time you open the web app, using Service
-Workers. In effect, this makes it [Trust on First Use][TOFU].
+installing some code in a [Service Worker][SW], which checks the code
+every time you open the web app. In effect, this makes it [Trust on
+First Use][TOFU].
 
 ## What web apps is this for?
 
@@ -94,20 +94,16 @@ often to stay up-to-date with security patches.
 5.  Create a file called `serviceworker-import.js` in the root of your
     domain. This file will (1) import other parts of the library and
     (2) tell the library where on GitHub to find your files. Let's say
-    your files are in a directory called `dist` in a certain repository.
-    Then this file should contain something like:
+    your files are in a directory called `dist` in a repository called
+    `username/repository`. Then this file should contain:
     
     ```js
     (async () => {
         await importScriptsFromSW('signed-web-apps/lib/sw/github.js');
         
-        self.GITHUB_API_URL = 'https://api.github.com/repos/<your-github-username>/<your-github-repo>/contents/?ref=';
+        self.GITHUB_REPOSITORY = 'username/repository';
         
-        self.getGitHubPath = function(request) {
-            let path = new URL(request.url).pathname;
-            if(path === '/') path = '/index.html';
-            return 'dist' + path;
-        }
+        self.GITHUB_DIRECTORY = 'dist/';
     })();
     ```
     
@@ -143,6 +139,7 @@ often to stay up-to-date with security patches.
     step 3, don't forget to do so whenever you update.
 
 
+[SW]: https://developer.mozilla.org/docs/Web/API/Service_Worker_API
 [TOFU]: https://en.wikipedia.org/wiki/Trust_on_first_use
 [CSP]: https://developer.mozilla.org/docs/Web/HTTP/CSP
 [SRI]: https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity
