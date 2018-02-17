@@ -67,30 +67,49 @@ often to stay up-to-date with security patches.
     could send users to a page without it, and the library would have no
     way of warning users of any malicious code on the page.
 
-        <script src="signed-web-apps/lib/client.js"></script>
-        <script>
-        new SWA({
-            url: 'signed-web-apps/lib/sw/serviceworker-stub.js'
-        });
-        </script>
+    ```html
+    <script src="/signed-web-apps/lib/client.js"></script>
+    <script>
+    new SWA({
+        url: '/signed-web-apps/lib/sw/serviceworker-stub.js',
+    });
+    </script>
+    ```
 
-3.  Create a file called `serviceworker-import.js` in the root of your
+3.  Configure your server to serve
+    `/signed-web-apps/lib/sw/serviceworker-stub.js` with a
+    `Service-Worker-Allowed: /` header.
+    
+    Alternatively, copy that file (or configure your server to serve it
+    from) the root of your domain, and update the url in step 2.
+
+4.  Configure your server to serve with every file a header named
+    `X-GitHub-Commit` containing the current git commit hash, which you
+    can get by running `git rev-parse HEAD`.
+    
+    On Heroku, you can enable a `HEROKU_SLUG_COMMIT` environment
+    variable containing the current commit by running `heroku
+    labs:enable runtime-dyno-metadata`.
+
+5.  Create a file called `serviceworker-import.js` in the root of your
     domain. This file will (1) import other parts of the library and
     (2) tell the library where on GitHub to find your files. Let's say
     your files are in a directory called `dist` in a certain repository.
     Then this file should contain something like:
     
-        (async () => {
-            await importScriptsFromSW('signed-web-apps/lib/sw/github.js');
-            
-            const GITHUB_API_URL = 'https://api.github.com/repos/<your-github-username>/<your-github-repo>/contents/?ref=';
-            
-            function getGitHubPath(request) {
-                let path = new URL(request.url).pathname;
-                if(path === '/') path = '/index.html';
-                return 'dist' + path;
-            }
-        })();
+    ```js
+    (async () => {
+        await importScriptsFromSW('signed-web-apps/lib/sw/github.js');
+        
+        self.GITHUB_API_URL = 'https://api.github.com/repos/<your-github-username>/<your-github-repo>/contents/?ref=';
+        
+        self.getGitHubPath = function(request) {
+            let path = new URL(request.url).pathname;
+            if(path === '/') path = '/index.html';
+            return 'dist' + path;
+        }
+    })();
+    ```
     
     In this file, you can execute code and register for events like a
     normal Service Worker, with two important exceptions:
@@ -114,14 +133,7 @@ often to stay up-to-date with security patches.
     import it from the file above. Be careful though, since the two may
     not play nicely together.
 
-3.  Configure your server to serve
-    `/signed-web-apps/lib/sw/serviceworker-stub.js` with a
-    `Service-Worker-Allowed: /` header.
-    
-    Alternatively, copy that file (or configure your server to serve it
-    from) the root of your domain, and update the url in step 2.
-
-4.  Update often. (Please see the note above the installation
+6.  Update often. (Please see the note above the installation
     instructions for the reasons why.) Preferably add this to your
     install or build script:
 
