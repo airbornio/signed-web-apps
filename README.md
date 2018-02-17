@@ -80,7 +80,7 @@ often to stay up-to-date with security patches.
     your files are in a directory called `dist` in a certain repository.
     Then this file should contain something like:
     
-        await importScripts('signed-web-apps/lib/sw/github.js');
+        await importScriptsFromSW('signed-web-apps/lib/sw/github.js');
         
         const GITHUB_API_URL = 'https://api.github.com/repos/<your-github-username>/<your-github-repo>/contents/?ref=';
         
@@ -93,9 +93,10 @@ often to stay up-to-date with security patches.
     In this file, you can execute code and register for events like a
     normal Service Worker, with two important exceptions:
     
-    1.  importScripts() is not synchronous, so you need to put `await`
-        in front of it. This is also why the example above is wrapped in
-        an asynchronous [immediately-executed function
+    1.  You shouldn't use importScripts(), because it doesn't support
+        [SRI]. Instead, you should use the asynchronous function
+        importScriptsFromSW(). This is also why the example above is
+        wrapped in an asynchronous [immediately-executed function
         expression][IIFE].
     
     2.  You can only register for `fetch`, `message`, `install` and
