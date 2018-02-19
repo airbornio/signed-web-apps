@@ -75,10 +75,10 @@ often to stay up-to-date with security patches.
     });
     swa.addEventListener('urlChecked', event => {
         let data = event.data;
-        if(data.msg === 'response_matches' || data.msg === 'response_unchanged') {
+        if(data.msg === 'signature_matches' || data.msg === 'response_unchanged') {
             // SUCCESS
         } else {
-            // data.msg is 'response_does_not_match' or 'network_error'
+            // data.msg is 'signature_mismatch' or 'signature_missing' or 'network_error'
             alert(data.msg + ': ' + data.path);
         }
     });
