@@ -68,10 +68,10 @@ often to stay up-to-date with security patches.
     way of warning users of any malicious code on the page.
 
     ```html
-    <script src="/signed-web-apps/lib/client.js"></script>
+    <script src="/signed-web-apps/dist/client.js"></script>
     <script>
     let swa = new SWA({
-        url: '/signed-web-apps/lib/sw/serviceworker-stub.js',
+        url: '/signed-web-apps/dist/sw/serviceworker-stub.js',
     });
     swa.addEventListener('urlChecked', event => {
         let data = event.data;
@@ -90,7 +90,7 @@ often to stay up-to-date with security patches.
     ```
 
 3.  Configure your server to serve
-    `/signed-web-apps/lib/sw/serviceworker-stub.js` with a
+    `/signed-web-apps/dist/sw/serviceworker-stub.js` with a
     `Service-Worker-Allowed: /` header.
     
     Alternatively, copy that file to the root of your domain, and update
@@ -112,7 +112,7 @@ often to stay up-to-date with security patches.
     
     ```js
     (async () => {
-        await importScriptsFromSW('signed-web-apps/lib/sw/github.js');
+        await importScriptsFromSW('signed-web-apps/dist/sw/github.js');
         
         self.GITHUB_REPOSITORY = 'username/repository';
         
@@ -132,7 +132,7 @@ often to stay up-to-date with security patches.
     2.  You can only register for `fetch`, `message`, `install` and
         `activate` events. If you want to register for other events, you
         have to manually add them to the `eventNames` list in
-        `signed-web-apps/lib/sw/serviceworker.js`.
+        `signed-web-apps/dist/sw/serviceworker.js`.
     
     For more info about the kind of code you can write in this file, see
     [swa-config].
