@@ -70,8 +70,21 @@ often to stay up-to-date with security patches.
     ```html
     <script src="/signed-web-apps/lib/client.js"></script>
     <script>
-    new SWA({
+    let swa = new SWA({
         url: '/signed-web-apps/lib/sw/serviceworker-stub.js',
+    });
+    swa.addEventListener('urlChecked', event => {
+        let data = event.data;
+        if(data.msg === 'response_matches' || data.msg === 'response_unchanged') {
+            // SUCCESS
+        } else {
+            // data.msg is 'response_does_not_match' or 'network_error'
+            alert(data.msg + ': ' + data.path);
+        }
+    });
+    swa.addEventListener('error', event => {
+        // event.code is 'sw_not_supported' or 'sw_failed'
+        alert(event.code + ': ' + event.message);
     });
     </script>
     ```
