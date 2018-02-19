@@ -80,8 +80,8 @@ often to stay up-to-date with security patches.
     `/signed-web-apps/lib/sw/serviceworker-stub.js` with a
     `Service-Worker-Allowed: /` header.
     
-    Alternatively, copy that file (or configure your server to serve it
-    from) the root of your domain, and update the url in step 2.
+    Alternatively, copy that file to the root of your domain, and update
+    the url in step 2.
 
 4.  Configure your server to serve with every file a header named
     `X-GitHub-Commit` containing the current git commit hash, which you
