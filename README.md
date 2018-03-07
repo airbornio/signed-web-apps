@@ -106,41 +106,10 @@ often to stay up-to-date with security patches.
 
 5.  Create a file called `serviceworker-import.js` in the root of your
     domain. This file will (1) import other parts of the library and
-    (2) tell the library where on GitHub to find your files. Let's say
-    your files are in a directory called `dist` in a repository called
-    `username/repository`. Then this file should contain:
+    (2) tell the library where on GitHub to find your files.
     
-    ```js
-    (async () => {
-        await importScriptsFromSW('signed-web-apps/dist/sw/github.js');
-        
-        self.GITHUB_REPOSITORY = 'username/repository';
-        
-        self.GITHUB_DIRECTORY = 'dist/';
-    })();
-    ```
-    
-    In this file, you can execute code and register for events like a
-    normal Service Worker, with two important exceptions:
-    
-    1.  You shouldn't use importScripts(), because it doesn't support
-        [SRI]. Instead, you should use the asynchronous function
-        importScriptsFromSW(). This is also why the example above is
-        wrapped in an asynchronous [immediately-executed function
-        expression][IIFE].
-    
-    2.  You can only register for `fetch`, `message`, `install` and
-        `activate` events. If you want to register for other events, you
-        have to manually add them to the `eventNames` list in
-        `signed-web-apps/dist/sw/serviceworker.js`.
-    
-    For more info about the kind of code you can write in this file, see
-    [swa-config].
-    
-    If you want to add another (possibly unrelated) Service Worker
-    script (or already have one), don't register it manually. Instead,
-    import it from the file above. Be careful though, since the two may
-    not play nicely together.
+    [Generate your configuration code here][generate-config] and
+    copy+paste it to that file.
 
 6.  Update often. (Please see the note above the installation
     instructions for the reasons why.) Preferably add this to your
@@ -156,4 +125,4 @@ often to stay up-to-date with security patches.
 [TOFU]: https://en.wikipedia.org/wiki/Trust_on_first_use
 [CSP]: https://developer.mozilla.org/docs/Web/HTTP/CSP
 [SRI]: https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity
-[IIFE]: https://developer.mozilla.org/docs/Glossary/IIFE
+[generate-config]: https://airbornio.github.io/signed-web-apps/generate-config.html
