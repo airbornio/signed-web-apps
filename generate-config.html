@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<title>Generate Signed Web Apps config file</title>
+<link rel="stylesheet" href="generate-config.css">
+<h1>Generate <a href="https://github.com/airbornio/signed-web-apps">Signed Web Apps</a> config file</h1>
+<form>
+<p>
+    <b>Your GitHub repository:</b><br>
+    <input name="repository" placeholder="username/repository"><br>
+</p>
+<p>
+    <b>Git branch containing the code that your server serves to users:</b><br>
+    <input name="branch" placeholder="master"><br>
+</p>
+<p>
+    <b>Directory in your repository containing the code that your server serves to users:</b><br>
+    <input name="directory" placeholder=""> (Leave empty for root directory.)<br>
+</p>
+<p>
+    <b>Check for new commits:</b><br>
+    Every <input name="cacheCommits" placeholder="1"> (number or "Infinity") day(s), or when the <code>Last-Modified</code> response header is later than when we last checked.<br>
+</p>
+<p>
+    <b>Look at commits that are:</b><br>
+    Either the latest commit, or less than <input name="maxCommitAge" placeholder="1"> (number or "Infinity") day(s) old. (Max 30 latest commits.)<br>
+</p>
+<p>
+    <b>Usually, it's hard to push to GitHub and update your server at exactly the same time. Therefore, you should push to GitHub <i>first</i>, and then this library will decide whether to look at the latest or an older commit by:</b><br>
+    <label><input type="radio" name="chooseCommitBy" value="lastModified"> Getting the last commit <i>before</i> the <code>Last-Modified</code> response header</label><br>
+    <label><input type="radio" name="chooseCommitBy" value="responseHeader"> Getting the git commit hash from response header <input name="gitHashResponseHeader" placeholder="Git-Commit"></label><br>
+    <label><input type="radio" name="chooseCommitBy" value="latest"> Always look at the latest commit (not recommended)</label><br>
+</p>
+<p>
+    <b>File served at the root of your domain:</b><br>
+    <input name="index" placeholder="index.html"><br>
+</p>
+<p>
+    <b>Append <code>.html</code> to urls without an extension when looking in your GitHub repository? (e.g. <code>/contact</code> &rarr; <code>contact.html</code>)</b><br>
+    <label><input type="radio" name="appendDotHtml" value="yes"> Yes</label><br>
+    <label><input type="radio" name="appendDotHtml" value="no"> No (default)</label><br>
+</p>
+<p>
+    <b>Don't check GitHub for paths starting with:</b><br>
+    (<b>Note:</b> this is only meant for <code>fetch()</code> or <code>XMLHttpRequest</code>s which validate the response.)<br>
+    (<b>Note 2:</b> requests which use <a href="https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity">Subresource Integrity</a> are not checked against GitHub by default.)<br>
+    <textarea name="ignorePaths"></textarea> (One path per line)<br>
+</p>
+<p>
+    <b>Do you want the Service Worker to cache your web app and respond with
+the cached version while fetching and verifying the new version?
+(stale-while-revalidate)</b><br>
+    <label><input type="radio" name="staleWhileRevalidate" value="yes"> Yes (recommended for performance, but may lead to outdated responses)</label><br>
+    <label><input type="radio" name="staleWhileRevalidate" value="no"> No (default)</label><br>
+</p>
+<p>
+    <b>Reset form: (Clears all inputs)</b> <input type="reset"><br>
+</p>
+</form>
+<p>
+    <b>When you're done, copy the following code to <code>serviceworker-import.js</code>:</b>
+    <pre id="result"></pre>
+</p>
+<hr>
+<h2>Custom configuration</h2>
+
+<h3>Varying configuration</h3>
+As you may have noticed, all configuration options on the right are
+functions. This means that you can have different configurations for
+different resources on your website. Most of them take <code>(request,
+response)</code> parameters, but <code>shouldCheckGit</code> only takes
+a <code>request</code> parameter.
+
+<h3>Importing other Service Worker files</h3>
+<code>serviceworker-import.js</code> is not only the file where you can
+configure Signed Web Apps. It is also the place to import other Service
+Worker files (related or unrelated to Signed Web Apps), by calling:
+
+<pre>
+    await importScriptsFromSW(<mark>"path/to/other/service-worker.js"</mark>);
+</pre>
+
+The <code>await</code> means that all code after it will wait
+until the Service Worker file is downloaded and run. If you don't need
+that, you can remove it. You can also download and run multiple files
+simultaneously, and wait until all of them have finished running, by
+calling:
+
+<pre>
+    await importScriptsFromSW(<mark>"first/service-worker.js"</mark>, <mark>"second/service-worker.js"</mark>);
+</pre>
+
+<b>Note:</b> there are some differences between code you can run in a
+normal Service Worker, and code you can run in this file (and files
+imported by it), namely:
+
+<ol>
+    <li>
+        <p>You can only register for <code>fetch</code>, <code>message</code>, <code>install</code> and
+        <code>activate</code> events. If you want to register for other events, you
+        have to manually add them to the <code>eventNames</code> list in
+        <code>signed-web-apps/dist/sw/serviceworker.js</code>.</p>
+    </li>
+    <li>
+        <p>As shown in the examples above, you should use importScriptsFromSW() instead of importScripts(), because the latter doesn't support
+        <a href="https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity">Subresource Integrity</a>. This is also why generated config code above is
+        wrapped in an asynchronous <a href="https://developer.mozilla.org/docs/Glossary/IIFE">immediately-executed function
+        expression</a>.</p>
+    </li>
+</ol>
+
+<script src="generate-config.js"></script>

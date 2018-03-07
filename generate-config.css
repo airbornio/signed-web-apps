@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 10px 30px;
+}
+h1 {
+    margin-bottom: 0;
+}
+@media (min-width: 1200px) {
+    form {
+        width: 50%;
+        float: left;
+        margin-right: 50px;
+    }
+}
+#result {
+    height: calc(100% - 20px);
+}
+hr {
+    clear: both;
+}
