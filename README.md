@@ -101,20 +101,30 @@ GitHub][swa-example-gh]).
     Alternatively, copy that file to the root of your domain, and update
     the url in step 2.
 
-4.  Configure your server to serve with every file a header named
-    `X-GitHub-Commit` containing the current git commit hash, which you
-    can get by running `git rev-parse HEAD`.
-    
-    On Heroku, you can enable a `HEROKU_SLUG_COMMIT` environment
-    variable containing the current commit by running `heroku
-    labs:enable runtime-dyno-metadata`.
-
-5.  Create a file called `serviceworker-import.js` in the root of your
+4.  Create a file called `serviceworker-import.js` in the root of your
     domain. This file will (1) import other parts of the library and
     (2) tell the library where on GitHub to find your files.
     
     [Generate your configuration code here][generate-config] and
     copy+paste it to that file.
+
+5.  Make sure that your server serves `Last-Modified` headers that
+    correspond to either the date when you last pushed files to your
+    server, or the date when the specific file changed on your server
+    (the latter may lead to an increase in GitHub API requests in some
+    cases, though).
+    
+    The default configuration from the previous step assumes that you:
+    
+    -   Push to GitHub *before* you push to your server, and that the
+        date in the `Last-Modified` header is later than when you pushed
+        to GitHub.
+    -   Always push to your server within a day of pushing to GitHub.
+        It's probably a good idea to set up a `production` branch for
+        this purpose.
+    -   Don't push an old commit to your server. If you want to rollback
+        your server to an older version, it's probably best to create a
+        revert commit and push it to GitHub and your server.
 
 6.  Update often. (Please see the note above the installation
     instructions for the reasons why.) Preferably add this to your
