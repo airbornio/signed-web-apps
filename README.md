@@ -56,6 +56,11 @@ API). To a lesser extent, so is the Service Worker API and its support
 by browsers. Therefore, if you decide to use it, update this library
 often to stay up-to-date with security patches.
 
+**Example app:**
+
+[Example app running on Heroku][swa-example] ([code on
+GitHub][swa-example-gh]).
+
 **Installation:**
 
 1.  Include this repository under your project:
@@ -125,4 +130,6 @@ often to stay up-to-date with security patches.
 [TOFU]: https://en.wikipedia.org/wiki/Trust_on_first_use
 [CSP]: https://developer.mozilla.org/docs/Web/HTTP/CSP
 [SRI]: https://developer.mozilla.org/docs/Web/Security/Subresource_Integrity
+[swa-example]: https://signed-web-apps-example.herokuapp.com/
+[swa-example-gh]: https://github.com/airbornio/signed-web-apps-example
 [generate-config]: https://airbornio.github.io/signed-web-apps/generate-config.html
