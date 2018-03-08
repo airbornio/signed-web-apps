@@ -20,6 +20,7 @@ function onInput(evt) {
         }
     }
     result.innerHTML = generateConfig(data);
+    form.style.minHeight = result.offsetHeight + 50 + 'px';
     if (evt) {
         localStorage.config = JSON.stringify(data);
     }
@@ -30,6 +31,18 @@ const defaultParts = defaultConfig.split('\n\n');
 
 onInput();
 
+const advanced = document.getElementById('advanced');
+const advancedConfigs = document.querySelectorAll('.advancedConfig');
+advanced.addEventListener('click', function(evt) {
+    evt.preventDefault();
+    advancedConfigs.forEach(advancedConfig => {
+        this.innerHTML = advancedConfig.classList.toggle('hidden') ? 'Advanced &darr;' : 'Advanced &uarr;';
+    });
+});
+
+if (generateConfig(config) !== generateConfig({repository: config.repository, branch: config.branch, directory: config.directory})) {
+    advanced.click();
+}
 
 function markInterpolate(strings, ...interpolations) {
     return strings[0] + interpolations.map((interp, i) => `<mark>${(interp + '').replace(/</g, '&lt;')}</mark>${strings[i + 1]}`).join('');

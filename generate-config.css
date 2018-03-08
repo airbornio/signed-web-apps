@@ -15,6 +15,9 @@ h1 {
         margin-right: 50px;
     }
 }
+.hidden {
+    display: none;
+}
 #result {
     height: calc(100% - 20px);
 }

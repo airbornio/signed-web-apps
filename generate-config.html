@@ -16,6 +16,10 @@
     <input name="directory" placeholder=""> (Leave empty for root directory.)<br>
 </p>
 <p>
+    <button id="advanced">Advanced &darr;</button>
+</p>
+<div class="advancedConfig hidden">
+<p>
     <b>Check for new commits:</b><br>
     Every <input name="cacheCommits" placeholder="1"> (number or "Infinity") day(s), or when the <code>Last-Modified</code> response header is later than when we last checked.<br>
 </p>
@@ -54,11 +58,13 @@ the cached version while fetching and verifying the new version?
 <p>
     <b>Reset form: (Clears all inputs)</b> <input type="reset"><br>
 </p>
+</div>
 </form>
 <p>
     <b>When you're done, copy the following code to <code>serviceworker-import.js</code>:</b>
     <pre id="result"></pre>
 </p>
+<div class="advancedConfig hidden">
 <hr>
 <h2>Custom configuration</h2>
 
@@ -106,5 +112,6 @@ imported by it), namely:
         expression</a>.</p>
     </li>
 </ol>
+</div>
 
 <script src="generate-config.js"></script>
