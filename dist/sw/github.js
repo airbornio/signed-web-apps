@@ -59,7 +59,7 @@
 	
 	self.shouldCheckGit = req => true;
 	
-	self.checkGitAsync = (req, res) => true;
+	self.shouldCheckGitSync = (req, res) => true;
 	
 	self.shouldCache = (req, res) => false;
 	
@@ -132,7 +132,7 @@
 						}
 					});
 					event.waitUntil(check);
-					if(!checkGitAsync(req, res) && !await check) {
+					if(shouldCheckGitSync(req, res) && !await check) {
 						return new Response(INVALID_SIG_RESPONSE, {status: 500, statusText: 'Did not match signature'});
 					}
 					return res.clone();
