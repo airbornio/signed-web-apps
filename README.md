@@ -63,9 +63,11 @@ GitHub][swa-example-gh]).
 
 **Installation:**
 
-1.  Include this repository under your project:
+1.  Include this repository under your project and copy
+    `serviceworker-stub.js` to the root of your project:
 
         git submodule add -b master https://github.com/airbornio/signed-web-apps.git
+        cp signed-web-apps/dist/sw/serviceworker-stub.js .
 
 2.  The following code should be included on **every page** of your web
     app (even 404 and other error pages). If you don't, an attacker
@@ -76,7 +78,7 @@ GitHub][swa-example-gh]).
     <script src="/signed-web-apps/dist/client.js"></script>
     <script>
     let swa = new SWA({
-        url: '/signed-web-apps/dist/sw/serviceworker-stub.js',
+        url: '/serviceworker-stub.js',
     });
     swa.addEventListener('urlChecked', event => {
         let data = event.data;
@@ -94,21 +96,14 @@ GitHub][swa-example-gh]).
     </script>
     ```
 
-3.  Configure your server to serve
-    `/signed-web-apps/dist/sw/serviceworker-stub.js` with a
-    `Service-Worker-Allowed: /` header.
-    
-    Alternatively, copy that file to the root of your domain, and update
-    the url in step 2.
-
-4.  Create a file called `serviceworker-import.js` in the root of your
+3.  Create a file called `serviceworker-import.js` in the root of your
     domain. This file will (1) import other parts of the library and
     (2) tell the library where on GitHub to find your files.
     
     [Generate your configuration code here][generate-config] and
     copy+paste it to that file.
 
-5.  Make sure that your server serves `Last-Modified` headers that
+4.  Make sure that your server serves `Last-Modified` headers that
     correspond to either the date when you last pushed files to your
     server, or the date when the specific file changed on your server
     (the latter may lead to an increase in GitHub API requests in some
@@ -126,14 +121,12 @@ GitHub][swa-example-gh]).
         your server to an older version, it's probably best to create a
         revert commit and push it to GitHub and your server.
 
-6.  Update often. (Please see the note above the installation
+5.  Update often. (Please see the note above the installation
     instructions for the reasons why.) Preferably add this to your
     install or build script:
 
         git submodule update --remote
-    
-    If you copied `serviceworker-stub.js` to the root of your domain in
-    step 3, don't forget to do so whenever you update.
+        cp signed-web-apps/dist/sw/serviceworker-stub.js .
 
 
 [SW]: https://developer.mozilla.org/docs/Web/API/Service_Worker_API
