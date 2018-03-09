@@ -75,6 +75,13 @@ different resources on your website. Most of them take <code>(request,
 response)</code> parameters, but <code>shouldCheckGit</code> only takes
 a <code>request</code> parameter.
 
+For example, to vary which branch on GitHub to look on, you could write
+something like:
+
+<pre>
+    self.gitBranch = req => req.url.startsWith("https://www.example.com") ? <mark>"release"</mark> : <mark>"development"</mark>;
+</pre>
+
 <h3>Importing other Service Worker files</h3>
 <code>serviceworker-import.js</code> is not only the file where you can
 configure Signed Web Apps. It is also the place to import other Service
